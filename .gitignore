@@ -1,0 +1,6 @@
+node_modules/
+.DS_Store
+
+# 擴充套件簽章私鑰：絕不進版控
+extension-key.pem
+*.pem

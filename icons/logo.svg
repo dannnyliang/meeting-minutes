@@ -1,0 +1,39 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="mic" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 圓角底 -->
+  <rect x="0" y="0" width="128" height="128" rx="30" fill="url(#bg)"/>
+
+  <!-- 文件 -->
+  <g>
+    <path d="M34 26 h36 l20 20 v56 a4 4 0 0 1 -4 4 H34 a4 4 0 0 1 -4 -4 V30 a4 4 0 0 1 4 -4 z"
+          fill="#ffffff"/>
+    <!-- 摺角 -->
+    <path d="M70 26 v16 a4 4 0 0 0 4 4 h16 z" fill="#c7d7f5"/>
+    <!-- 內文線條 -->
+    <rect x="42" y="58" width="44" height="6" rx="3" fill="#9db8e6"/>
+    <rect x="42" y="72" width="44" height="6" rx="3" fill="#c2d3ee"/>
+    <rect x="42" y="86" width="28" height="6" rx="3" fill="#c2d3ee"/>
+  </g>
+
+  <!-- 麥克風徽章 -->
+  <g>
+    <circle cx="92" cy="92" r="26" fill="url(#mic)" stroke="#ffffff" stroke-width="4"/>
+    <!-- 麥克風本體 -->
+    <rect x="86" y="74" width="12" height="22" rx="6" fill="#ffffff"/>
+    <!-- 收音弧 -->
+    <path d="M80 90 a12 12 0 0 0 24 0" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <!-- 支架與底座 -->
+    <line x1="92" y1="102" x2="92" y2="108" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <line x1="85" y1="108" x2="99" y2="108" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>

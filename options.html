@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="options">
+    <h1>會議記錄產生器 · 設定</h1>
+
+    <section class="card">
+      <h2>1. 用 Google 登入</h2>
+      <p class="muted">授權讀取你的雲端硬碟錄影、並建立 Google Doc（以你本人身份）。</p>
+      <div class="row">
+        <button id="signInBtn" class="primary">用 Google 登入</button>
+        <span id="signInStatus" class="muted"></span>
+        <button id="signOutBtn" class="link hidden">登出</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Gemini API key</h2>
+      <p class="muted">
+        每人用自己的 key。
+        <a id="howToKey" href="https://aistudio.google.com/apikey" target="_blank">如何取得？</a>
+      </p>
+      <div class="row">
+        <input id="apiKey" type="password" placeholder="貼上你的 Gemini API key" />
+        <button id="saveKey" class="primary">儲存</button>
+      </div>
+      <p class="warn small">
+        ⚠️ 免費額度有限且<b>內容可能被用於改進模型</b>。敏感會議建議在 Google Cloud 開啟付費，資料才不會被用於訓練。
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>3. 資料夾設定</h2>
+
+      <label>輸入資料夾（要掃描的錄影來源）
+        <div class="row">
+          <input id="inputFolderName" type="text" readonly placeholder="未選擇（預設：自動找 Meet Recordings）" />
+          <button id="pickInput" class="primary small">選擇</button>
+        </div>
+      </label>
+
+      <label>輸出資料夾（會議記錄 Doc 存放處）
+        <div class="row">
+          <input id="outputFolderName" type="text" readonly placeholder="與來源錄影相同資料夾（預設）" />
+          <button id="pickOutput" class="primary small">選擇</button>
+          <button id="clearOutput" class="link">用預設</button>
+        </div>
+      </label>
+
+      <label>已處理資料夾名稱（處理完把來源移到輸入資料夾下的這個子資料夾）
+        <input id="processedFolderName" type="text" placeholder="已處理" />
+      </label>
+
+      <button id="saveAdvanced" class="primary">儲存資料夾設定</button>
+    </section>
+
+    <section class="card">
+      <div class="row-between">
+        <h2>4. 會議記錄模板</h2>
+        <button id="addTemplate" class="primary small">＋ 新增模板</button>
+      </div>
+      <p class="muted small">不同會議可套不同模板（如 1on1、站會、設計審查）。處理時可在 popup 選用。</p>
+      <ul id="templateList" class="template-list"></ul>
+
+      <!-- 模板編輯器 -->
+      <div id="templateEditor" class="hidden editor">
+        <label>模板名稱
+          <input id="tplName" type="text" placeholder="例：1on1 會議" />
+        </label>
+        <label>Prompt 內容
+          <textarea id="tplPrompt" rows="12" placeholder="輸入給 AI 的指示…"></textarea>
+        </label>
+        <div class="row">
+          <button id="tplSave" class="primary">儲存模板</button>
+          <button id="tplCancel" class="link">取消</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 資料夾選擇器（逐層瀏覽） -->
+    <div id="folderModal" class="modal hidden">
+      <div class="modal-box">
+        <div class="row-between">
+          <h2 id="folderModalTitle">選擇資料夾</h2>
+          <button id="folderClose" class="icon-btn">✕</button>
+        </div>
+        <div class="row root-switch">
+          <button id="rootMyDrive" class="chip">我的雲端硬碟</button>
+          <button id="rootShared" class="chip">與我共用</button>
+        </div>
+        <div id="folderCrumb" class="crumb"></div>
+        <ul id="folderResults" class="folder-list"></ul>
+        <div class="row-between modal-footer">
+          <span id="folderCurrentName" class="muted small"></span>
+          <button id="folderPickCurrent" class="primary small">選擇此資料夾</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

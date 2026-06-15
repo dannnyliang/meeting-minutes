@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="popup">
+    <header>
+      <h1>會議記錄產生器</h1>
+      <button id="settingsBtn" class="icon-btn" title="設定">⚙</button>
+    </header>
+
+    <!-- 尚未設定 key 的提示 -->
+    <section id="needSetup" class="hidden card">
+      <p>還沒設定好，先到 <b>設定</b> 用 Google 登入並貼上 Gemini API key。</p>
+      <button id="openSetup" class="primary">前往設定</button>
+    </section>
+
+    <!-- 錄影清單 -->
+    <section id="listSection">
+      <div class="row-between">
+        <h2>最近的 Meet 錄影</h2>
+        <button id="refreshBtn" class="link">重新整理</button>
+      </div>
+      <label class="tpl-pick">模板
+        <select id="templateSelect"></select>
+      </label>
+      <ul id="recordingList"></ul>
+      <p id="listEmpty" class="muted hidden">沒有找到未處理的錄影。</p>
+    </section>
+
+    <!-- 處理進度 -->
+    <section id="progressSection" class="hidden card">
+      <div id="progressFileName" class="muted"></div>
+      <div class="progress-bar"><div id="progressFill"></div></div>
+      <div class="loading"><span class="spinner"></span><span id="progressText">準備中…</span></div>
+    </section>
+
+    <!-- 完成 -->
+    <section id="doneSection" class="hidden card success">
+      <p class="done-head">✅ <span id="doneTitle">會議記錄已完成</span></p>
+      <div class="row">
+        <button id="openDoc" class="primary">開啟 Google Doc</button>
+        <button id="backList" class="link">處理其他錄影</button>
+      </div>
+      <div id="usageText" class="muted tiny"></div>
+    </section>
+
+    <!-- 錯誤 -->
+    <section id="errorSection" class="hidden card error">
+      <p id="errorText"></p>
+      <button id="retryVideoBtn" class="primary hidden">改用「直接送影片」重試</button>
+      <button id="dismissError" class="link">關閉</button>
+    </section>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

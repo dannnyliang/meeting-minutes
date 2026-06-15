@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "會議記錄產生器",
+  "version": "0.1.0",
+  "description": "選一場 Google Meet 錄影，自動產出繁中逐字稿與摘要，存成 Google Doc。",
+  "minimum_chrome_version": "116",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "會議記錄產生器",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "options_page": "options.html",
+  "permissions": ["identity", "storage", "offscreen"],
+  "host_permissions": [
+    "https://www.googleapis.com/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "oauth2": {
+    "client_id": "389861634661-3ojtvo4gs60gfvf88unhctrvs71vikg0.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/drive"]
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6UBZYlVtsau6g+mkIGc6Lyv5V5AhKbnMrGRVGrELNn/AJJ1zt6sQ0BjINS+zbKcnrC7Qm88AT4tM7Nt8SGBXfhP8f8dHIBK6gnWT37UrtyGROAycFmxgUXfRz7iodlb1SfVKaiUdjK7DtjjKiSq/940zM+HIJ+IOlziIwJNath7daRRaW0JK7/+BqC7PvPXOz3pbKXl/0zJrCx8M7fDfvXBCNj14LdAh5wqV9OlNqWJXj7yyBStnatf8J6vbmSF5+oimN1QqNkvWRAsn+hsgIILixz2KEjplufCpB3Yz5FAYhRcT2oDjCuQQczyi7YFz9T0ZWfDtaf0OqqAuAQPD0wIDAQAB"
+}
