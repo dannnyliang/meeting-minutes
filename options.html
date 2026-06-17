@@ -30,6 +30,16 @@
       <p class="warn small">
         ⚠️ 免費額度有限且<b>內容可能被用於改進模型</b>。敏感會議建議在 Google Cloud 開啟付費，資料才不會被用於訓練。
       </p>
+
+      <label>Gemini 模型
+        <div class="row">
+          <select id="modelSelect"></select>
+          <button id="refreshModels" class="link small" title="用目前 API key 重新讀取可用模型">↻</button>
+          <input id="modelCustom" type="text" class="hidden" placeholder="例：gemini-2.5-pro-preview-xx" />
+          <button id="saveModel" class="primary">儲存</button>
+        </div>
+        <p id="modelStatus" class="muted small">儲存 API key 後會自動載入這把 key 實際可用的模型。</p>
+      </label>
     </section>
 
     <section class="card">

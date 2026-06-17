@@ -11,7 +11,7 @@
 
 **① 下載**
 
-到 [**Releases 頁面**](https://github.com/dannnyliang/meeting-minutes/releases/latest) 下載最新版的 `meeting-minutes-v1.0.0.zip`，在電腦上**解壓縮**。把解出來的資料夾放到一個**之後不會刪掉或移動**的位置（例如「文件」資料夾）。
+到 [**Releases 頁面**](https://github.com/dannnyliang/meeting-minutes/releases/latest) 下載最新版的 `meeting-minutes-v1.1.0.zip`，在電腦上**解壓縮**。把解出來的資料夾放到一個**之後不會刪掉或移動**的位置（例如「文件」資料夾）。
 
 **② 裝進 Chrome**
 

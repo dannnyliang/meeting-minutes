@@ -2,6 +2,18 @@
 import * as auth from "./lib/auth.js";
 import * as drive from "./lib/drive.js";
 import { ensureSeeded, saveTemplates } from "./lib/templates.js";
+import { DEFAULT_MODEL } from "./lib/prompt.js";
+import { listAvailableModels } from "./lib/gemini.js";
+
+// 撈不到清單時的 fallback（離線、key 還沒存等情境）。
+const FALLBACK_MODELS = [
+  { id: "gemini-2.5-flash", displayName: "Gemini 2.5 Flash" },
+  { id: "gemini-2.5-pro", displayName: "Gemini 2.5 Pro" },
+  { id: "gemini-2.5-flash-lite", displayName: "Gemini 2.5 Flash Lite" },
+  { id: "gemini-2.0-flash", displayName: "Gemini 2.0 Flash" },
+];
+
+let savedModel = DEFAULT_MODEL;
 
 const $ = (id) => document.getElementById(id);
 
@@ -26,6 +38,7 @@ let outputFolder = { id: "", name: "" }; // 空 = 與來源相同
 async function load() {
   const d = await chrome.storage.local.get([
     "apiKey",
+    "model",
     "inputFolderId",
     "inputFolderName",
     "outputFolderId",
@@ -33,6 +46,9 @@ async function load() {
     "processedFolderName",
   ]);
   if (d.apiKey) $("apiKey").placeholder = "已儲存（重貼可更新）";
+  savedModel = d.model || DEFAULT_MODEL;
+  renderModels(FALLBACK_MODELS);
+  if (d.apiKey) refreshModels({ silent: true });
   inputFolder = { id: d.inputFolderId || "", name: d.inputFolderName || "" };
   outputFolder = { id: d.outputFolderId || "", name: d.outputFolderName || "" };
   if (inputFolder.name) $("inputFolderName").value = inputFolder.name;
@@ -40,6 +56,61 @@ async function load() {
   $("processedFolderName").value = d.processedFolderName || "";
   await refreshSignIn();
   await initTemplates();
+}
+
+// 用一份模型清單（fallback 或實際撈到的）重畫 select，並把儲存值還原進去。
+function renderModels(models) {
+  const sel = $("modelSelect");
+  const custom = $("modelCustom");
+  sel.innerHTML = "";
+  for (const m of models) {
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = m.displayName ? `${m.id} — ${m.displayName}` : m.id;
+    sel.append(opt);
+  }
+  const customOpt = document.createElement("option");
+  customOpt.value = "__custom__";
+  customOpt.textContent = "自訂…";
+  sel.append(customOpt);
+
+  const known = models.some((m) => m.id === savedModel);
+  if (known) {
+    sel.value = savedModel;
+    custom.value = "";
+    custom.classList.add("hidden");
+  } else {
+    sel.value = "__custom__";
+    custom.value = savedModel;
+    custom.classList.remove("hidden");
+  }
+}
+
+function setModelStatus(text, kind) {
+  const el = $("modelStatus");
+  el.textContent = text;
+  el.classList.remove("warn", "muted");
+  el.classList.add(kind === "warn" ? "warn" : "muted");
+}
+
+async function refreshModels({ silent = false } = {}) {
+  const { apiKey } = await chrome.storage.local.get("apiKey");
+  if (!apiKey) {
+    if (!silent) setModelStatus("請先儲存 API key 才能載入清單。", "warn");
+    return;
+  }
+  setModelStatus("讀取可用模型中…");
+  try {
+    const models = await listAvailableModels(apiKey);
+    if (!models.length) {
+      setModelStatus("這把 key 沒有可用的 Gemini 模型，請確認方案或換 key。", "warn");
+      return;
+    }
+    renderModels(models);
+    setModelStatus(`✓ 已偵測 ${models.length} 個可用模型。`);
+  } catch (e) {
+    setModelStatus(`讀取失敗：${e.userMessage || e.message}`, "warn");
+  }
 }
 
 // ── 資料夾選擇器（逐層瀏覽真實 Drive 結構）──────────────
@@ -268,6 +339,30 @@ $("saveKey").onclick = async () => {
   $("apiKey").value = "";
   $("apiKey").placeholder = "已儲存（重貼可更新）";
   toast("已儲存 API key");
+  refreshModels();
+};
+
+$("refreshModels").onclick = () => refreshModels();
+
+$("modelSelect").onchange = () => {
+  const sel = $("modelSelect");
+  const custom = $("modelCustom");
+  if (sel.value === "__custom__") {
+    custom.classList.remove("hidden");
+    custom.focus();
+  } else {
+    custom.classList.add("hidden");
+  }
+};
+
+$("saveModel").onclick = async () => {
+  const sel = $("modelSelect");
+  const custom = $("modelCustom").value.trim();
+  const model = sel.value === "__custom__" ? custom : sel.value;
+  if (!model) return toast("請填模型代號");
+  await chrome.storage.local.set({ model });
+  savedModel = model;
+  toast(`已儲存模型：${model}`);
 };
 
 $("saveAdvanced").onclick = async () => {

@@ -27,12 +27,14 @@ async function ensureOffscreen() {
 async function getSettings() {
   const d = await chrome.storage.local.get([
     "apiKey",
+    "model",
     "inputFolderId",
     "outputFolderId",
     "processedFolderName",
   ]);
   return {
     apiKey: d.apiKey || "",
+    model: d.model || "",
     inputFolderId: d.inputFolderId || "",
     outputFolderId: d.outputFolderId || "", // 空 = 與來源相同資料夾
     processedFolderName: d.processedFolderName || "已處理",

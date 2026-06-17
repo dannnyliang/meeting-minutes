@@ -22,7 +22,7 @@ function baseName(name) {
 
 async function process(job) {
   const { fileId, fileName, token, mode, settings } = job;
-  const { apiKey, prompt, inputFolderId, outputFolderId, processedFolderName } = settings;
+  const { apiKey, model, prompt, inputFolderId, outputFolderId, processedFolderName } = settings;
 
   // 先取得來源檔的所在資料夾（決定預設輸出位置與移檔來源）
   const meta = await drive.getFileMeta(token, fileId);
@@ -58,6 +58,7 @@ async function process(job) {
   // 3. Gemini 一條龍
   const { markdown, usage } = await generateMinutes(bytes, mimeType, {
     apiKey,
+    model,
     prompt,
     onStatus: (s) => progress("ai", { note: s }),
     onRetry: ({ attempt, waitMs }) =>

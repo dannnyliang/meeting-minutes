@@ -26,7 +26,8 @@ header { display: flex; align-items: center; justify-content: space-between; }
 h1 { font-size: 16px; margin: 4px 0 12px; }
 h2 { font-size: 14px; margin: 0 0 6px; }
 
-.row { display: flex; gap: 8px; align-items: center; }
+.row { display: flex; gap: 8px; align-items: center; min-width: 0; }
+.row > * { min-width: 0; }
 .row-between { display: flex; align-items: center; justify-content: space-between; }
 .muted { color: var(--muted); }
 .small { font-size: 12px; }
@@ -40,6 +41,8 @@ button {
   border: 1px solid var(--border);
   background: #f8f9fa;
   padding: 7px 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 button.primary { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
 button.small { padding: 5px 10px; font-size: 13px; }
@@ -53,6 +56,15 @@ input[type="text"], input[type="password"] {
   border: 1px solid var(--border);
   border-radius: 6px;
   width: 100%;
+}
+
+.row select {
+  font: inherit;
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
 }
 
 .card {
