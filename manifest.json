@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "會議記錄產生器",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "選一場 Google Meet 錄影，自動產出繁中逐字稿與摘要，存成 Google Doc。",
   "minimum_chrome_version": "116",
   "icons": {
@@ -29,7 +29,7 @@
     "https://generativelanguage.googleapis.com/*"
   ],
   "oauth2": {
-    "client_id": "389861634661-3ojtvo4gs60gfvf88unhctrvs71vikg0.apps.googleusercontent.com",
+    "client_id": "389861634661-mvpi5ulp5pqeg6roesimtodp5jeaj38b.apps.googleusercontent.com",
     "scopes": ["https://www.googleapis.com/auth/drive"]
   },
   "content_security_policy": {

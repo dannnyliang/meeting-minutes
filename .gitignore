@@ -1,6 +1,10 @@
 node_modules/
 .DS_Store
 
+# 環境變數 / 密鑰：絕不進版控
+.env
+.env.*
+
 # 擴充套件簽章私鑰：絕不進版控
 extension-key.pem
 *.pem
