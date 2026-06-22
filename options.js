@@ -25,6 +25,7 @@ function toast(text) {
 }
 
 async function refreshSignIn() {
+  $("redirectUrl").value = chrome.identity.getRedirectURL();
   const signedIn = await auth.isSignedIn();
   $("signInStatus").textContent = signedIn ? "已登入 ✓" : "尚未登入";
   $("signInBtn").classList.toggle("hidden", signedIn);
@@ -330,6 +331,11 @@ $("signOutBtn").onclick = async () => {
   await auth.signOut();
   toast("已登出");
   refreshSignIn();
+};
+
+$("copyRedirect").onclick = async () => {
+  await navigator.clipboard.writeText($("redirectUrl").value);
+  toast("已複製 redirect URL");
 };
 
 $("saveKey").onclick = async () => {

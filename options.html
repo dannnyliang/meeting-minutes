@@ -15,6 +15,14 @@
         <span id="signInStatus" class="muted"></span>
         <button id="signOutBtn" class="link hidden">登出</button>
       </div>
+      <details class="small muted">
+        <summary>OAuth 設定（首次架設用）</summary>
+        <p>請在 Google Cloud Console 建立「Web 應用程式」OAuth client，並把下面這個 redirect URL 加進「已授權的重新導向 URI」：</p>
+        <div class="row">
+          <input id="redirectUrl" type="text" readonly />
+          <button id="copyRedirect" class="link small">複製</button>
+        </div>
+      </details>
     </section>
 
     <section class="card">
