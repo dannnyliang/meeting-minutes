@@ -5,6 +5,9 @@ node_modules/
 .env
 .env.*
 
+# 打包產物（發布用，附在 GitHub release，不進版控）
+meeting-minutes-v*.zip
+
 # 擴充套件簽章私鑰：絕不進版控
 extension-key.pem
 *.pem
