@@ -195,8 +195,25 @@ async function restoreStatus() {
   return true;
 }
 
-$("settingsBtn").onclick = () => chrome.runtime.openOptionsPage();
-$("openSetup").onclick = () => chrome.runtime.openOptionsPage();
+// openOptionsPage 在某些瀏覽器／情境下會 reject（Could not create an options page），
+// 失敗時退回用 tabs.create 手動開分頁。
+function openOptions() {
+  try {
+    const p = chrome.runtime.openOptionsPage(() => {
+      if (chrome.runtime.lastError) {
+        chrome.tabs.create({ url: chrome.runtime.getURL("options.html") });
+      }
+    });
+    if (p && typeof p.catch === "function") {
+      p.catch(() => chrome.tabs.create({ url: chrome.runtime.getURL("options.html") }));
+    }
+  } catch {
+    chrome.tabs.create({ url: chrome.runtime.getURL("options.html") });
+  }
+}
+
+$("settingsBtn").onclick = () => openOptions();
+$("openSetup").onclick = () => openOptions();
 $("refreshBtn").onclick = () => loadRecordings();
 $("backList").onclick = () => loadRecordings();
 
