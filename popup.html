@@ -27,6 +27,15 @@
       </label>
       <ul id="recordingList"></ul>
       <p id="listEmpty" class="muted hidden">沒有找到未處理的錄影。</p>
+
+      <div class="bylink">
+        <p class="muted small">不是主辦人、清單裡沒有？貼上錄影的 Google Drive 連結：</p>
+        <div class="row">
+          <input id="linkInput" type="text" placeholder="貼上 Drive 影片連結或檔案 ID" />
+          <button id="linkBtn" class="primary small">產生記錄</button>
+        </div>
+        <p id="linkError" class="muted small hidden"></p>
+      </div>
     </section>
 
     <!-- 處理進度 -->

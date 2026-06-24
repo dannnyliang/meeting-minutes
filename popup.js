@@ -119,6 +119,7 @@ async function start(file, mode) {
     fileId: file.id,
     fileName: file.name,
     mode,
+    byLink: !!file.byLink,
     templateId: $("templateSelect").value,
   });
   if (!resp?.ok) showError(resp?.error || "無法開始處理");
@@ -212,10 +213,35 @@ function openOptions() {
   }
 }
 
+// 貼連結 → 查影片資訊 → 走和清單相同的 onGenerate 流程（標記 byLink）。
+async function onLinkGenerate() {
+  const input = $("linkInput").value.trim();
+  if (!input) return;
+  hide($("linkError"));
+  $("linkBtn").disabled = true;
+  $("linkBtn").textContent = "讀取中…";
+  try {
+    const resp = await chrome.runtime.sendMessage({ type: "getFileInfo", input });
+    if (!resp?.ok) {
+      $("linkError").textContent = resp?.error || "讀取失敗，請確認連結與權限。";
+      show($("linkError"));
+      return;
+    }
+    onGenerate({ ...resp.file, byLink: true });
+  } finally {
+    $("linkBtn").disabled = false;
+    $("linkBtn").textContent = "產生記錄";
+  }
+}
+
 $("settingsBtn").onclick = () => openOptions();
 $("openSetup").onclick = () => openOptions();
 $("refreshBtn").onclick = () => loadRecordings();
 $("backList").onclick = () => loadRecordings();
+$("linkBtn").onclick = () => onLinkGenerate();
+$("linkInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") onLinkGenerate();
+});
 
 (async function init() {
   hideAllPanels();

@@ -93,6 +93,10 @@ ul#recordingList { list-style: none; padding: 0; margin: 8px 0 0; }
 .gen-btn { white-space: nowrap; flex-shrink: 0; }
 .rec:hover { border-color: #c8d3df; background: #fafbfc; }
 
+.bylink { border-top: 1px dashed var(--border); margin-top: 12px; padding-top: 10px; }
+.bylink p { margin: 0 0 6px; }
+#linkError { color: var(--error); }
+
 .tiny { font-size: 11px; }
 .done-head { font-size: 15px; font-weight: 500; margin: 0 0 10px; }
 

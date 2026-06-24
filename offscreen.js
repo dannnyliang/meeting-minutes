@@ -21,7 +21,7 @@ function baseName(name) {
 }
 
 async function process(job) {
-  const { fileId, fileName, token, mode, settings } = job;
+  const { fileId, fileName, token, mode, byLink, settings } = job;
   const { apiKey, model, prompt, inputFolderId, outputFolderId, processedFolderName } = settings;
 
   // 先取得來源檔的所在資料夾（決定預設輸出位置與移檔來源）
@@ -65,22 +65,26 @@ async function process(job) {
       progress("ai", { note: `限流，自動重試中（第 ${attempt} 次，約 ${Math.round(waitMs / 1000)}s）…` }),
   });
 
-  // 4. 建立 Google Doc：預設放來源檔所在資料夾；有指定輸出資料夾才放那裡
+  // 4. 建立 Google Doc：預設放來源檔所在資料夾；有指定輸出資料夾才放那裡。
+  //    貼連結來的檔多半在別人的 Drive、本帳號無寫入權 → 放自己的雲端硬碟根目錄（null parent）。
   progress("doc");
-  const outFolderId = outputFolderId || sourceParent;
+  const outFolderId = outputFolderId || (byLink ? null : sourceParent);
   const doc = await drive.createDocFromMarkdown(token, baseName(fileName), markdown, outFolderId);
 
-  // 5. 成功後才移動來源檔到「已處理」（失敗不毀資料）
+  // 5. 成功後才移動來源檔到「已處理」（失敗不毀資料）。
   // 「已處理」固定建在輸入資料夾下（用穩定的 inputFolderId，避免每次依個別 parent 而巢狀）。
-  try {
-    const baseFolder = inputFolderId || sourceParent;
-    const processedId = await drive.getOrCreateFolder(token, processedFolderName || "已處理", baseFolder);
-    // 來源已在「已處理」就不重複搬，避免 已處理/已處理 巢狀。
-    if (sourceParent && sourceParent !== processedId) {
-      await drive.moveFile(token, fileId, processedId, sourceParent);
+  // 貼連結來的檔通常無寫入權、也不在輸入資料夾流程內，直接跳過搬移。
+  if (!byLink) {
+    try {
+      const baseFolder = inputFolderId || sourceParent;
+      const processedId = await drive.getOrCreateFolder(token, processedFolderName || "已處理", baseFolder);
+      // 來源已在「已處理」就不重複搬，避免 已處理/已處理 巢狀。
+      if (sourceParent && sourceParent !== processedId) {
+        await drive.moveFile(token, fileId, processedId, sourceParent);
+      }
+    } catch (_) {
+      // 移檔失敗不影響已產生的 Doc，只是下次列表還會看到它
     }
-  } catch (_) {
-    // 移檔失敗不影響已產生的 Doc，只是下次列表還會看到它
   }
 
   emit({ type: "done", docLink: doc.webViewLink, docId: doc.id, usage, fileName });

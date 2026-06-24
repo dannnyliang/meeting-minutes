@@ -57,6 +57,29 @@ async function listRecordings() {
   return { ok: true, files };
 }
 
+// 從 Google Drive 分享連結或原始 ID 解析出 file id。
+// 支援 .../d/<id>/...、?id=<id>、以及直接貼裸 ID。
+function parseFileId(input) {
+  const s = (input || "").trim();
+  const m = s.match(/\/d\/([\w-]+)/) || s.match(/[?&]id=([\w-]+)/);
+  if (m) return m[1];
+  if (/^[\w-]{20,}$/.test(s)) return s;
+  return null;
+}
+
+// 「貼連結」入口：解析連結 → 查影片資訊（不在意檔案在誰的 Drive，
+// 只要本帳號有檢視權即可），回傳給 popup 走和清單相同的處理流程。
+async function fileInfoFromInput(input) {
+  const fileId = parseFileId(input);
+  if (!fileId)
+    return { ok: false, error: "看不懂這個連結，請貼 Google Drive 影片的分享連結或檔案 ID。" };
+  const token = await auth.getToken({ interactive: true });
+  const file = await drive.getFileInfo(token, fileId);
+  if (!(file.mimeType || "").startsWith("video/"))
+    return { ok: false, error: "這個連結不是影片檔，請確認是會議錄影。" };
+  return { ok: true, file };
+}
+
 // 是否正在處理中（以 session status 為準，service worker 被回收也不影響）。
 async function isBusy() {
   const { status } = await chrome.storage.session.get("status");
@@ -64,7 +87,7 @@ async function isBusy() {
   return !["done", "error"].includes(status.stage);
 }
 
-async function startJob({ fileId, fileName, mode, templateId }) {
+async function startJob({ fileId, fileName, mode, templateId, byLink }) {
   if (await isBusy()) {
     const { status } = await chrome.storage.session.get("status");
     return { ok: false, busy: true, error: `正在處理「${status?.fileName || "另一支影片"}」，請待完成後再試。` };
@@ -79,7 +102,7 @@ async function startJob({ fileId, fileName, mode, templateId }) {
   chrome.runtime.sendMessage({
     target: "offscreen",
     type: "process",
-    job: { fileId, fileName, token, mode: mode || "audio", settings: { ...settings, inputFolderId, prompt } },
+    job: { fileId, fileName, token, mode: mode || "audio", byLink: !!byLink, settings: { ...settings, inputFolderId, prompt } },
   });
   return { ok: true };
 }
@@ -95,6 +118,12 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   }
   if (msg?.type === "listRecordings") {
     listRecordings().then(sendResponse).catch((e) => sendResponse({ ok: false, error: e.message }));
+    return true;
+  }
+  if (msg?.type === "getFileInfo") {
+    fileInfoFromInput(msg.input)
+      .then(sendResponse)
+      .catch((e) => sendResponse({ ok: false, error: e.userMessage || e.message }));
     return true;
   }
   if (msg?.type === "start") {
