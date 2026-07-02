@@ -22,7 +22,7 @@ function baseName(name) {
 
 async function process(job) {
   const { fileId, fileName, token, mode, byLink, settings } = job;
-  const { apiKey, model, prompt, inputFolderId, outputFolderId, processedFolderName } = settings;
+  const { apiKey, model, prompt, systemInstruction, inputFolderId, outputFolderId, processedFolderName } = settings;
 
   // 先取得來源檔的所在資料夾（決定預設輸出位置與移檔來源）
   const meta = await drive.getFileMeta(token, fileId);
@@ -60,6 +60,7 @@ async function process(job) {
     apiKey,
     model,
     prompt,
+    systemInstruction,
     onStatus: (s) => progress("ai", { note: s }),
     onRetry: ({ attempt, waitMs }) =>
       progress("ai", { note: `限流，自動重試中（第 ${attempt} 次，約 ${Math.round(waitMs / 1000)}s）…` }),

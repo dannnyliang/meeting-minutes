@@ -40,6 +40,7 @@ async function load() {
   const d = await chrome.storage.local.get([
     "apiKey",
     "model",
+    "systemInstruction",
     "inputFolderId",
     "inputFolderName",
     "outputFolderId",
@@ -48,6 +49,7 @@ async function load() {
   ]);
   if (d.apiKey) $("apiKey").placeholder = "已儲存（重貼可更新）";
   savedModel = d.model || DEFAULT_MODEL;
+  $("systemInstruction").value = d.systemInstruction || "";
   renderModels(FALLBACK_MODELS);
   if (d.apiKey) refreshModels({ silent: true });
   inputFolder = { id: d.inputFolderId || "", name: d.inputFolderName || "" };
@@ -346,6 +348,11 @@ $("saveKey").onclick = async () => {
   $("apiKey").placeholder = "已儲存（重貼可更新）";
   toast("已儲存 API key");
   refreshModels();
+};
+
+$("saveSystemInstruction").onclick = async () => {
+  await chrome.storage.local.set({ systemInstruction: $("systemInstruction").value.trim() });
+  toast("已儲存系統指令");
 };
 
 $("refreshModels").onclick = () => refreshModels();

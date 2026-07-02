@@ -76,8 +76,20 @@
     </section>
 
     <section class="card">
+      <h2>4. 系統指令（進階）</h2>
+      <p class="muted small">
+        送給 AI 的最高層指令，<b>套用於所有模板、每一場會議</b>。適合放不隨會議改變的固定資訊，
+        例如團隊成員名冊（幫助辨識發言者）、專有名詞／縮寫對照，或整體語氣規則。留空則不送。
+      </p>
+      <label>System Instruction 內容
+        <textarea id="systemInstruction" rows="10" placeholder="例：&#10;## 團隊成員（發言者對照）&#10;- 〈成員全名〉（〈英文名／暱稱〉，〈職務〉）：可能自稱〈常用稱呼〉&#10;辨識規則：聽到相近發音對應到名冊正式名字；名冊外的人才用「發言者 A／B」；不確定時寧可標 A 也別亂猜。&#10;&#10;## 專有名詞&#10;- 〈正確寫法〉：〈說明；常被誤聽／誤寫成什麼〉"></textarea>
+      </label>
+      <button id="saveSystemInstruction" class="primary">儲存系統指令</button>
+    </section>
+
+    <section class="card">
       <div class="row-between">
-        <h2>4. 會議記錄模板</h2>
+        <h2>5. 會議記錄模板</h2>
         <button id="addTemplate" class="primary small">＋ 新增模板</button>
       </div>
       <p class="muted small">不同會議可套不同模板（如 1on1、站會、設計審查）。處理時可在 popup 選用。</p>

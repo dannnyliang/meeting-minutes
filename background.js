@@ -28,6 +28,7 @@ async function getSettings() {
   const d = await chrome.storage.local.get([
     "apiKey",
     "model",
+    "systemInstruction",
     "inputFolderId",
     "outputFolderId",
     "processedFolderName",
@@ -35,6 +36,7 @@ async function getSettings() {
   return {
     apiKey: d.apiKey || "",
     model: d.model || "",
+    systemInstruction: d.systemInstruction || "", // 跨場共用的系統指令，空 = 不送
     inputFolderId: d.inputFolderId || "",
     outputFolderId: d.outputFolderId || "", // 空 = 與來源相同資料夾
     processedFolderName: d.processedFolderName || "已處理",
